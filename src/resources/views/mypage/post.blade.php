@@ -1,36 +1,35 @@
 @extends('layouts.app')
-@extends('admin.layouts.navbar')
+@extends('layouts.navbar')
 
-@section('title', 'Posts Edit')
+@section('title', 'Post')
 
 @section('content')
 
-<div class="mx-auto my-2 border" style="padding: 5px; width: 50%">
-    <form action="{{ route('admin.posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
+<div class="mx-auto" style="padding: 5px; width: 50%">
+    <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        @method('PUT')
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Title</label>
-            <input type="text" class="form-control" name="title" value="{{old('title', $post->title)}}">
+            <input type="text" class="form-control" name="title">
             @if($errors->has('title'))
             <div class="text-danger">{{ $errors->first('title') }}</div>
             @endif
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Content</label>
-            <textarea class="form-control ckeditor {{ $errors->has('content') ? 'is-invalid' : '' }}" name="content" id="content">{!! old('content', $post->content) !!}</textarea>
+            <textarea class="form-control ckeditor {{ $errors->has('content') ? 'is-invalid' : '' }}" name="content" id="content">{!! old('content') !!}</textarea>
             @if($errors->has('content'))
             <div class="text-danger">{{ $errors->first('content') }}</div>
             @endif
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Thumbnail</label>
-            <input type="file" class="form-control" name="thumbnail" value="{{old('thumbnail', $post->thumbnail)}}">
+            <input type="file" class="form-control" name="thumbnail">
             @if($errors->has('thumbnail'))
             <div class="text-danger">{{ $errors->first('thumbnail') }}</div>
             @endif
         </div>
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary">Create</button>
     </form>
 </div>
 

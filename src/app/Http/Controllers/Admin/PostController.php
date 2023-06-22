@@ -21,6 +21,7 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
+        $post->with('comments', 'comments.user', 'comments.replies');
         return view('admin.posts.show', compact('post'));
     }
 
@@ -33,12 +34,21 @@ class PostController extends Controller
     {
         $post = Post::create([
             'title' => $request->title,
-            'url' => $request->url,
+            'url' => '',
             'content' => $request->content,
-            'thumbnail' => $request->thumbnail,
+            'thumbnail' => '',
             'creator_model' => Auth::user()->getTable(),
             'created_by_id' => Auth::user()->id,
         ]);
+
+        if($post) {
+            $post->url = url('/posts/' . $post->id);
+            $post->save();
+        }
+
+        if($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()){
+            $post->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnail');
+        }
 
         if ($media = $request->input('ck-media', false)) {
             Media::whereIn('id', $media)->update(['model_id' => $post->id]);
@@ -49,6 +59,7 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+        $post->with('comments', 'comments.user');
         return view('admin.posts.edit', compact('post'));
     }
 
@@ -56,18 +67,32 @@ class PostController extends Controller
     {
         $post->update([
             'title' => $request->title,
-            'url' => $request->url,
+            'url' => url('/posts/' . $post->id),
             'content' => $request->content,
-            'thumbnail' => $request->thumbnail,
+            'thumbnail' => '',
             'creator_model' => Auth::user()->getTable(),
             'created_by_id' => Auth::user()->id,
         ]);
+
+        if ($request->hasFile('thumbnail', false)) {
+            if (!$post->thumbnail || $request->hasFile('thumbnail') !== $post->thumbnail->file_name) {
+                if ($post->thumbnail) {
+                    $post->thumbnail->delete();
+                }
+                $post->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnail');
+            }
+        }
+        
+        if ($media = $request->input('ck-media', false)) {
+            Media::whereIn('id', $media)->update(['model_id' => $post->id]);
+        }
 
         return back();
     }
 
     public function destroy(Post $post)
     {
+        $post->thumbnail->delete();
         $post->delete();
 
         return redirect('admin/posts');

@@ -1,25 +1,18 @@
 @extends('layouts.app')
 @extends('admin.layouts.navbar')
 
-@section('title', 'Posts')
+@section('title', 'Posts Create')
 
 @section('content')
 
 <div class="mx-auto" style="padding: 5px; width: 50%">
-    <form action="{{ route('admin.posts.store') }}" method="POST">
+    <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Title</label>
             <input type="text" class="form-control" name="title">
             @if($errors->has('title'))
             <div class="text-danger">{{ $errors->first('title') }}</div>
-            @endif
-        </div>
-        <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Url</label>
-            <input type="text" class="form-control" name="url">
-            @if($errors->has('url'))
-            <div class="text-danger">{{ $errors->first('url') }}</div>
             @endif
         </div>
         <div class="mb-3">
@@ -31,7 +24,7 @@
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Thumbnail</label>
-            <input type="text" class="form-control" name="thumbnail">
+            <input type="file" class="form-control" name="thumbnail">
             @if($errors->has('thumbnail'))
             <div class="text-danger">{{ $errors->first('thumbnail') }}</div>
             @endif
@@ -62,11 +55,9 @@
                                 xhr.addEventListener('error', function() {
                                     reject(genericErrorText)
                                 });
-
                                 xhr.addEventListener('abort', function() {
                                     reject()
                                 });
-
                                 xhr.addEventListener('load', function() {
                                     var response = xhr.response;
                                     if (!response || xhr.status !== 201) {

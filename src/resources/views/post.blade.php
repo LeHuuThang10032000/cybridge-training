@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@extends('admin.layouts.navbar')
+@extends('layouts.navbar')
 
-@section('title', 'Posts Detail')
+@section('title') {{$post->title}} @endsection
 
 @section('content')
 
@@ -9,30 +9,37 @@
     <div class="d-flex align-items-center flex-column">
         <div class="mb-3">
             @if($post->thumbnail !== null)
-            <img src="{{ $post->thumbnail->getUrl() }}" alt="">
+            <img src="{{ $post->thumbnail->getUrl() }}" alt="" width="100%" height="100%">
             @endif
         </div>
 
         <div class="mb-5">
-            <p class="h5">{{ $post->title }}</p>
+            <p class="h1">{{ $post->title }}</p>
         </div>
     </div>
 
-    <div class="mb-3">
-        Url: <a href="{{ $post->url }}">{{ $post->url }}</a>
+    {!! $post->content !!}
+    
+    <div class="d-flex justify-content-between">
+        <address class="author">By {{ $post->author->name }}</address> <span>on <time pubdate datetime="{{ $post->created_at }}" title="{{ $post->created_at }}">"{{ $post->created_at }}"</time></span>
     </div>
-    <div class="mb-3 p-1 bg-light">
-        {!! $post->content !!}
-    </div>
-    <div class="mb-3">
-        <address class="author">By {{ $post->author->name }}</address>
-        on <time pubdate datetime="{{ $post->created_at }}" title="{{ $post->created_at }}">"{{ $post->created_at }}"</time>
+
+    <div class="mb-2">
+        <form class="like-post mb-0" action="" method="POST">
+            @csrf
+            <input type="hidden" value="{{ $post->id }}" name="post_id">
+            <button id="like_{{$post->id}}" type="submit" href="{{$post->url}}" class="btn {{ ($post->liked()) ? 'btn-danger' : 'btn-outline-danger' }} p-1" style="border-radius: 50%">
+                <img src="{{ asset('img/white-heart.png') }}" alt="#">
+            </button>
+            <span id="likes_count_{{$post->id}}">{{ $post->likeCount }} like(s)</span>
+        </form>
     </div>
 </div>
 
+@can('create_comment')
 <div class="mx-auto my-2 border" style="padding: 5px; width: 50%">
     <p class="">Write a comment:</p>
-    <form class="mb-0" action="{{ route('admin.comments.store') }}" method="POST">
+    <form class="mb-0" action="{{ route('comments.store') }}" method="POST">
         @csrf
         <input type="hidden" value="{{ $post->id }}" name="post_id">
         <textarea class="form-control ckeditor {{ $errors->has('content') ? 'is-invalid' : '' }}" name="content" id="content"></textarea>
@@ -42,10 +49,11 @@
         <button type="submit" class="btn btn-primary mt-1">Submit</button>
     </form>
 </div>
+@endcan
 
 <div class="mx-auto my-2 border" style="padding: 5px; width: 50%">
     <p>Comments:</p>
-    @include('admin.posts.comments', ['comments' => $post->comments, 'post_id' => $post->id])
+    @include('comments', ['comments' => $post->comments, 'post_id' => $post->id])
 </div>
 
 @endsection
@@ -61,7 +69,7 @@
                             return new Promise(function(resolve, reject) {
                                 // Init request
                                 var xhr = new XMLHttpRequest();
-                                xhr.open('POST', "{{ route('admin.posts.media.upload', ['_token' => csrf_token() ]) }}", true);
+                                xhr.open('POST', "{{ route('posts.media.upload', ['_token' => csrf_token() ]) }}", true);
                                 xhr.setRequestHeader('Accept', 'application/json');
                                 xhr.responseType = 'json';
                                 // Init listeners
@@ -114,6 +122,41 @@
                 }
             );
         }
+    });
+</script>
+<script>
+    $('.like-post').on('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        var buttonId = '#like_' + formData.get('post_id');
+        var countId = '#likes_count_' + formData.get('post_id');
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.post({
+            url: "{{ route('posts.like') }}",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                if (data.is_like == true) {
+                    alert('liked');
+                    $(buttonId).removeClass('btn-outline-danger').addClass('btn-danger');
+                    $(countId).text(data.counts + ' like(s)');
+                } else {
+                    alert('unliked');
+                    $(buttonId).removeClass('btn-danger').addClass('btn-outline-danger');
+                    $(countId).text(data.counts + ' like(s)');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Something went wrong');
+            }
+        });
     });
 </script>
 @endpush

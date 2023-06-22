@@ -8,6 +8,12 @@
                 <li class="nav-item">
                     <a class="nav-link text-light {{ Request::is('admin.posts') ? 'active' : '' }}" href="{{ route('admin.posts.index') }}">Posts</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light {{ Request::is('admin.rules') ? 'active' : '' }}" href="{{ route('admin.rules.index') }}">Rules</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light {{ Request::is('admin.medias') ? 'active' : '' }}" href="{{ route('admin.medias.index') }}">Medias</a>
+                </li>
             </ul>
             <form class="d-flex mb-0" action="{{ route('admin.logout') }}" method="POST">
                 @csrf

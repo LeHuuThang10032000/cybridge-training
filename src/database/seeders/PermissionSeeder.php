@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Permission;
 
 class PermissionSeeder extends Seeder
 {
@@ -17,16 +18,9 @@ class PermissionSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
 
         DB::table('permissions')->truncate();
-        DB::table('permissions')->insert(
-            [
-                'name' => 'create_post',
-                'guard_name' => 'web'
-            ],
-            [
-                'name' => 'create_comment',
-                'guard_name' => 'web'
-            ],
-        );
+
+        Permission::create(['name' => 'create_post']);
+        Permission::create(['name' => 'create_comment']);
 
         Schema::enableForeignKeyConstraints();
     }

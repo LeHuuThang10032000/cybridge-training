@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
+use App\Imports\UsersImport;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
@@ -14,7 +19,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return  view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('users'));
     }
 
     /**
@@ -44,17 +49,25 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(User $user)
     {
-        //
+        $rules = Permission::all();
+        return view('admin.users.edit', compact('rules', 'user'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        //
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        $user->syncPermissions($request->permissions);
+
+        return back();
     }
 
     /**
@@ -63,5 +76,17 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new UsersExport, 'users.' . $request->type);
+    }
+
+    public function import(Request $request) 
+    {
+        Excel::import(new UsersImport, $request->file('user_file')->store('files'));
+        
+        return back();
     }
 }

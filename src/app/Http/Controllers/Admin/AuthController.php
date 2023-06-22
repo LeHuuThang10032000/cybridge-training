@@ -15,7 +15,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if ($request->getMethod() == 'GET') {
-            if (Auth::check()) {
+            if (Auth::check() && Auth::guard('admin')) {
                 return redirect()->route('admin.users.index');
             }
             return view('admin.login');
@@ -53,13 +53,9 @@ class AuthController extends Controller
         return redirect()->route('admin.users.index');
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::guard('admin')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
 
         return redirect('admin/login');
     }

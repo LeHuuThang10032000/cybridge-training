@@ -8,13 +8,13 @@
 <div class="mx-auto" style="padding: 5px; width: 50%">
     <div class="d-flex my-1">
         <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            Import
+            Export
         </button>
         <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{{ route('admin.users.export', ['type' => 'xlsx']) }}">xlsx</a></li>
             <li><a class="dropdown-item" href="{{ route('admin.users.export', ['type' => 'csv']) }}">csv</a></li>
         </ul>
-        <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#import">Export</button>
+        <button type="button" class="btn btn-warning mx-2" data-bs-toggle="modal" data-bs-target="#import">Import</button>
 
         <div class="modal fade" id="import" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
 

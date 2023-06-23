@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="m-2">
+<div class="p-3">
     <div class="row row-cols-1 row-cols-md-4 g-4">
         @foreach($posts as $post)
         <div class="col">

@@ -11,8 +11,6 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Post extends Model implements HasMedia
 {
     use InteractsWithMedia, Likeable, SoftDeletes;
-
-    protected $appends = ['author_name'];
     
     protected $fillable = [
         'title',
@@ -21,6 +19,13 @@ class Post extends Model implements HasMedia
         'thumbnail',
         'creator_model',
         'created_by_id',
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'media'
     ];
 
     public function author()
@@ -39,10 +44,5 @@ class Post extends Model implements HasMedia
     public function getThumbnailAttribute()
     {
         return $this->getMedia('thumbnail')->last();
-    }
-
-    public function getAuthorNameAttribute()
-    {
-        return $this->author->name;
     }
 }

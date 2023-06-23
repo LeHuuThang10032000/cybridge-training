@@ -16,9 +16,9 @@
             <input type="password" class="form-control" id="exampleInputPassword1" name="password">
         </div>
         @if(session()->has('login_error'))
-        <span>
+        <p>
             <strong>Incorrect email or password</strong>
-        </span>
+        </p>
         @endif
         <button type="submit" class="btn btn-primary">login</button>
     </form>

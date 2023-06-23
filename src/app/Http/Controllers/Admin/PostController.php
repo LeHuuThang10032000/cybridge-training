@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PostsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -9,6 +10,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class PostController extends Controller
@@ -75,7 +77,7 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('thumbnail', false)) {
-            if (!$post->thumbnail || $request->hasFile('thumbnail') !== $post->thumbnail->file_name) {
+            if ($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
                 if ($post->thumbnail) {
                     $post->thumbnail->delete();
                 }
@@ -106,5 +108,10 @@ class PostController extends Controller
         $media         = $model->addMediaFromRequest('upload')->toMediaCollection('ck-media');
 
         return response()->json(['id' => $media->id, 'url' => $media->getUrl()], Response::HTTP_CREATED);
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new PostsExport, 'posts.' . $request->type);
     }
 }

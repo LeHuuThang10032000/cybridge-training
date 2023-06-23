@@ -7,6 +7,13 @@
 
 <div class="mx-auto" style="padding: 5px; width: fit-content; max-width: 80%">
     <div class="my-2">
+        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Export
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ route('admin.posts.export', ['type' => 'xlsx']) }}">xlsx</a></li>
+            <li><a class="dropdown-item" href="{{ route('admin.posts.export', ['type' => 'csv']) }}">csv</a></li>
+        </ul>
         <a class="btn btn-primary" href="{{ route('admin.posts.create') }}">Create</a>
     </div>
     <table class="table align-middle">

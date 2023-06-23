@@ -25,7 +25,10 @@
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Thumbnail</label>
-            <input type="file" class="form-control" name="thumbnail" value="{{old('thumbnail', $post->thumbnail)}}">
+            @if($post->thumbnail)
+            <img src="{{ $post->thumbnail->getUrl() }}" alt="" width="150px" height="150px">
+            @endif
+            <input type="file" class="form-control" name="thumbnail">
             @if($errors->has('thumbnail'))
             <div class="text-danger">{{ $errors->first('thumbnail') }}</div>
             @endif

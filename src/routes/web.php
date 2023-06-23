@@ -59,6 +59,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::post('register', [AdminAuthController::class, 'store']);
 
     Route::group(['middleware' => ['auth:admin']], function () {
+        Route::get('posts/export', [AdminPostController::class, 'export'])->name('posts.export');
         Route::resource('posts', AdminPostController::class);
         Route::post('posts/upload-image', [AdminPostController::class, 'storeCKImage'])->name('posts.media.upload');
 

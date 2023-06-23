@@ -53,7 +53,7 @@ class PostController extends Controller
             'url' => '',
             'content' => $request->content,
             'thumbnail' => '',
-            'creator_model' => Auth::user()->getTable(),
+            'creator_model' => Auth::guard('web')->user()->getTable(),
             'created_by_id' => Auth::user()->id,
         ]);
 

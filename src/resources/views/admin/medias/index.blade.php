@@ -33,6 +33,22 @@
                 </td>
             </tr>
             @endforeach
+            @if($post->thumbnail)
+            <tr>
+                <th scope="row">{{$post->thumbnail->id}}</th>
+                <td>
+                    <img src="{{ $post->thumbnail->getUrl() }}" alt="" width="150px" height="150px">
+                </td>
+                <td>
+                    <a class="btn btn-link mx-1" href="{{ route('admin.medias.edit', $post->thumbnail->id) }}">Edit</a>
+                    <form class="mb-0" method="POST" action="{{ route('admin.medias.destroy', $post->thumbnail->id) }}" onSubmit="return confirm('Are you want to delete this media?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-link text-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            @endif
             @endforeach
         </tbody>
     </table>
@@ -49,15 +65,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($posts as $post)
-            @foreach($post->getMedia("ck-media") as $media)
+            @foreach($comments as $comment)
+            @foreach($comment->getMedia("ck-media") as $media)
             <tr>
-                <th scope="row">{{$post->id}}</th>
+                <th scope="row">{{$comment->id}}</th>
                 <td>
                     <img src="{{ $media->getUrl() }}" alt="" width="150px" height="150px">
                 </td>
                 <td>
-                    <a class="btn btn-link mx-1" href="{{ route('admin.posts.edit', $post->id) }}">Edit</a>
+                    <a class="btn btn-link mx-1" href="{{ route('admin.comments.edit', $post->id) }}">Edit</a>
                     <form class="mb-0" method="POST" action="{{ route('admin.medias.destroy', $media->id) }}" onSubmit="return confirm('Are you want to delete this media?');">
                         @csrf
                         @method('DELETE')

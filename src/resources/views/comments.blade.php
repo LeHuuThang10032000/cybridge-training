@@ -36,7 +36,6 @@
         </div>
         @endcan
 
-        @if($comment->user_id == auth()->user()->id && $comment->user_model == auth()->user()->getTable())
         <div class="collapse" id="store_comment_{{ $comment->id }}">
             <form action="{{ route('comments.store') }}" method="POST">
                 @csrf
@@ -50,6 +49,7 @@
             </form>
         </div>
 
+        @if($comment->user_id == auth()->user()->id && $comment->user_model == auth()->user()->getTable())
         <div class="collapse" id="edit_comment_{{ $comment->id }}">
             <form action="{{ route('comments.update', $comment->id) }}" method="POST">
                 @csrf

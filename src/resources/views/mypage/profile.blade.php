@@ -29,10 +29,10 @@
         </div>
         <hr>
         @foreach($myPosts as $post)
-        <div class="bg-light p-2 border mb-2">
+        <div class="bg-light p-2 border mb-2 d-flex justify-content-between">
             <p>{{ $post->user_name }} liked your post. <span class="fw-lighter">{{ now()->diffInMinutes($post->created_at) }}m</span></p>
-            <a href="">
-                <img src="" alt="" width="20px" height="20px">
+            <a href="{{$comment->post->url}}">
+                <img src="{{$comment->post->thumbnail->getUrl()}}" alt="" width="100px" height="100px">
             </a>
         </div>
         @endforeach

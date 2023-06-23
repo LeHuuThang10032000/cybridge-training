@@ -9,7 +9,7 @@
     <div class="d-flex align-items-center flex-column">
         <div class="mb-3">
             @if($post->thumbnail !== null)
-            <img src="{{ $post->thumbnail->getUrl() }}" alt="">
+            <img src="{{ $post->thumbnail->getUrl() }}" alt="" width="100%">
             @endif
         </div>
 
@@ -61,7 +61,7 @@
                             return new Promise(function(resolve, reject) {
                                 // Init request
                                 var xhr = new XMLHttpRequest();
-                                xhr.open('POST', "{{ route('admin.posts.media.upload', ['_token' => csrf_token() ]) }}", true);
+                                xhr.open('POST', "{{ route('admin.comments.media.upload', ['_token' => csrf_token() ]) }}", true);
                                 xhr.setRequestHeader('Accept', 'application/json');
                                 xhr.responseType = 'json';
                                 // Init listeners

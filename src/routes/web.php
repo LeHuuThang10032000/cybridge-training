@@ -60,8 +60,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['middleware' => ['auth:admin']], function () {
         Route::get('posts/export', [AdminPostController::class, 'export'])->name('posts.export');
-        Route::resource('posts', AdminPostController::class);
         Route::post('posts/upload-image', [AdminPostController::class, 'storeCKImage'])->name('posts.media.upload');
+        Route::resource('posts', AdminPostController::class);
 
         Route::get('users/export', [UserController::class, 'export'])->name('users.export');
         Route::post('users/import', [UserController::class, 'import'])->name('users.import');
@@ -69,6 +69,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         
         Route::resource('rules', RuleController::class);
         Route::resource('medias', MediaController::class);
+
+        Route::post('comments/upload-image', [AdminCommentController::class, 'storeCKImage'])->name('comments.media.upload');
         Route::resource('comments', AdminCommentController::class);
 
         Route::post('logout', [AdminAuthController::class, 'logout'])->name('logout');

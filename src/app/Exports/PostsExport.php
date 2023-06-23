@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Post;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -19,7 +18,9 @@ class PostsExport implements FromCollection, WithHeadings, WithDrawings
             'url',
             'content',
             'thumbnail',
-            'author'
+            'auhtor id',
+            'author role',
+            'author name',
         ];
     }
 
@@ -27,12 +28,14 @@ class PostsExport implements FromCollection, WithHeadings, WithDrawings
     {
         $posts = Post::all();
 
-        foreach ($posts as $post) {
-            $post->author = $post->author->name;
+        $postsMap = $posts->map(function($post) {
+            $post->author_name = $post->author->name;
             unset($post->author);
-        }
+            unset($post->thumbnail);
+            return $post;
+        });
 
-        return $posts;
+        return $postsMap;
     }
 
     public function drawings()
@@ -50,10 +53,4 @@ class PostsExport implements FromCollection, WithHeadings, WithDrawings
         return $drawings;
     }
 
-    public function columnWidths(): array
-    {
-        return [
-            'E' => 120,
-        ];
-    }
 }

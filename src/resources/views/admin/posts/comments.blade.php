@@ -1,7 +1,12 @@
 @foreach($comments as $comment)
 <div class="m-2">
-    <div class="bg-light p-2">
+    <div id="section-{{ $comment->id }}" class="bg-light p-2">
+        @if($comment->user)
         <strong>{{$comment->user->name}}</strong>
+        @else
+        <strong>Một người dùng nào đó đã phán</strong>
+        @endif
+
         @if($comment->deleted_at !== null)
             <p>This comment has been remove</p>
         @else

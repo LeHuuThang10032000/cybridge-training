@@ -11,7 +11,7 @@ class MyPageController extends Controller
 {
     public function like()
     {
-        $posts = Post::where('creator_model', 'users')->whereLikedBy(Auth::user()->id)->with('media', 'likeCounter')->get();
+        $posts = Post::whereLikedBy(Auth::user()->id)->with('media', 'likeCounter')->get();
 
         return view('mypage.liked', compact('posts'));
     }

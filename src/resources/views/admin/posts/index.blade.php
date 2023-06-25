@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="mx-auto" style="padding: 5px; width: fit-content; max-width: 80%">
+<div class="mx-auto mb-2" style="padding: 5px; width: fit-content; max-width: 80%">
     <div class="my-2">
         <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             Export
@@ -60,6 +60,9 @@
             @endforeach
         </tbody>
     </table>
+    <div class="d-flex justify-content-end">
+        {{ $posts->links() }}
+    </div>
 </div>
 
 @endsection

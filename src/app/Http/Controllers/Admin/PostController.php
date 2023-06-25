@@ -17,7 +17,7 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::simplePaginate(10);
         return  view('admin.posts.index', compact('posts'));
     }
 
@@ -94,7 +94,9 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $post->thumbnail->delete();
+        if($post->thumbnail) {
+            $post->thumbnail->delete();
+        }
         $post->delete();
 
         return redirect('admin/posts');

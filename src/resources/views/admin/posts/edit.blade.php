@@ -26,7 +26,9 @@
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Thumbnail</label>
             @if($post->thumbnail)
-            <img src="{{ $post->thumbnail->getUrl() }}" alt="" width="150px" height="150px">
+            <div class="mb-1">
+                <img src="{{ $post->thumbnail->getUrl() }}" alt="" width="150px" height="150px">
+            </div>
             @endif
             <input type="file" class="form-control" name="thumbnail">
             @if($errors->has('thumbnail'))

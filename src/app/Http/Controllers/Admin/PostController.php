@@ -8,6 +8,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Repositories\Post\PostRepository;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -127,6 +128,12 @@ class PostController extends Controller
 
     public function export(Request $request)
     {
-        return Excel::download(new PostsExport, 'posts.' . $request->type);
+        try {
+            (new PostsExport)->queue('posts.'. $request->type, 'export');
+
+            return back()->with('message', 'Export successfully completed');
+        } catch(Exception $e) {
+            return back()->with('message', $e);
+        }
     }
 }

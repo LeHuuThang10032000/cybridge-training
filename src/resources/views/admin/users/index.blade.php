@@ -10,6 +10,9 @@
         <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
             Export
         </button>
+        @if(session()->has('message'))
+        <div class="text-danger">{{ session()->get('message') }}</div>
+        @endif
         <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{{ route('admin.users.export', ['type' => 'xlsx']) }}">xlsx</a></li>
             <li><a class="dropdown-item" href="{{ route('admin.users.export', ['type' => 'csv']) }}">csv</a></li>

@@ -3,13 +3,17 @@
 namespace App\Exports;
 
 use App\Models\Post;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
-class PostsExport implements FromCollection, WithHeadings, WithDrawings
+class PostsExport implements FromCollection, WithHeadings, WithDrawings, ShouldQueue
 {
+    use Exportable;
+
     public function headings(): array
     {
         return [

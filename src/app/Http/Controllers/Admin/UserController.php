@@ -8,6 +8,7 @@ use App\Imports\UsersImport;
 use App\Models\User;
 use App\Repositories\Permission\PermissionRepository;
 use App\Repositories\User\UserRepository;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
@@ -62,7 +63,13 @@ class UserController extends Controller
 
     public function export(Request $request)
     {
-        return Excel::download(new UsersExport, 'users.' . $request->type);
+        try {
+            (new UsersExport)->queue('users.'. $request->type, 'export');
+
+            return back();
+        } catch(Exception $e) {
+            return back();
+        }
     }
 
     public function import(Request $request) 

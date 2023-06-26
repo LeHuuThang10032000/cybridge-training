@@ -16,6 +16,9 @@
         </ul>
         <a class="btn btn-primary" href="{{ route('admin.posts.create') }}">Create</a>
     </div>
+    @if(session()->has('message'))
+    <div class="text-danger">{{ session()->get('message') }}</div>
+    @endif
     <table class="table align-middle">
         <thead style="background-color: #08C;">
             <tr>

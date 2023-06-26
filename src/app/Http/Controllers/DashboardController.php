@@ -2,15 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Repositories\Post\PostRepository;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    protected $postRepo;
+
+    public function __construct(PostRepository $postRepo)
+    {
+        $this->postRepo = $postRepo;
+    }
+
     public function index()
     {
-        $posts = Post::with('media', 'likeCounter')->get();
+        $posts = $this->postRepo->getPosts(null, ['media', 'likeCounter']);
+        
         return view('dashboard', compact('posts'));
     }
 }

@@ -26,7 +26,7 @@
                 </td>
                 <td scope="row">{{$media->collection_name}}</td>
                 <td>
-                    <a class="btn btn-link mx-1" href="{{ route('admin.medias.edit', $media->id) }}">Edit</a>
+                    <a class="btn btn-link mx-1" href="{{ route('admin.posts.edit', $post->id) }}">Edit</a>
                     <form class="mb-0" method="POST" action="{{ route('admin.medias.destroy', $media->id) }}" onSubmit="return confirm('Are you want to delete this media?');">
                         @csrf
                         @method('DELETE')
@@ -43,7 +43,7 @@
                 </td>
                 <td scope="row">{{$post->thumbnail->collection_name}}</td>
                 <td>
-                    <a class="btn btn-link mx-1" href="{{ route('admin.medias.edit', $post->thumbnail->id) }}">Edit</a>
+                    <a class="btn btn-link mx-1" href="{{ route('admin.posts.edit', $post->id) }}">Edit</a>
                     <form class="mb-0" method="POST" action="{{ route('admin.medias.destroy', $post->thumbnail->id) }}" onSubmit="return confirm('Are you want to delete this media?');">
                         @csrf
                         @method('DELETE')

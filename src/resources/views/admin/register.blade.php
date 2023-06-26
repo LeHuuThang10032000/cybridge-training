@@ -5,6 +5,7 @@
 @section('content')
 
 <div class="mx-auto" style="width: 50%;">
+    <h1>Register</h1>
     <form action="{{ route('admin.register') }}" method="POST">
         @csrf
         <div class="mb-3">

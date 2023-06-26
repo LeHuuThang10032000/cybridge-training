@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
+use App\Repositories\Comment\CommentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -11,30 +12,18 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+    protected $commentRepo;
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function __construct(CommentRepository $commentRepo)
     {
-        //
+        $this->commentRepo = $commentRepo;
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         abort_if(Gate::denies('create_comment'), 403);
 
-        $comment = Comment::create([
+        $comment = $this->commentRepo->create([
             'content' => $request->content,
             'post_id' => $request->post_id,
             'user_id'  => Auth::user()->id,

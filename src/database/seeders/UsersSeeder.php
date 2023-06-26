@@ -15,7 +15,7 @@ class UsersSeeder extends Seeder
         $csvFile = database_path('seeders/data/users.csv');
         $users = $this->parseCsv($csvFile);
 
-        $userChunks = array_chunk($users, 500); // Chunk the users array to optimize insertion
+        $userChunks = array_chunk($users, 1000);
 
         foreach ($userChunks as $chunk) {
             $values = [];

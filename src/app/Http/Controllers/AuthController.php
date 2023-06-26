@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\Permission\PermissionRepository;
+use App\Repositories\User\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +13,15 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    protected $userRepo;
+    protected $permissionRepo;
+
+    public function __construct(UserRepository $userRepo, PermissionRepository $permissionRepo)
+    {
+        $this->userRepo = $userRepo;
+        $this->permissionRepo = $permissionRepo;
+    }
+
     public function login(Request $request)
     {
         if ($request->getMethod() == 'GET') {
@@ -41,15 +52,16 @@ class AuthController extends Controller
             'password' => ['required', 'min:6'],
         ]);
 
-        $user = User::create([
+        
+        $user = $this->userRepo->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        $permissions = DB::table('permissions')->where('name', 'create_post')->orWhere('name', 'create_comment')->get();
-        if(isset($permissions)) {
-            $user->syncPermissions($request->permissions);
+        $permissions = $this->permissionRepo->getPermissionByName(['create_post', 'create_comment']);
+        if($permissions) {
+            $user->syncPermissions($permissions);
         }
 
         Auth::login($user);

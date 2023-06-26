@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
+use App\Repositories\Comment\CommentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -13,28 +14,16 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $commentRepo;
+
+    public function __construct(CommentRepository $commentRepo)
     {
-        //
+        $this->commentRepo = $commentRepo;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCommentRequest $request)
     {
-        $comment = Comment::create([
+        $comment = $this->commentRepo->create([
             'content' => $request->content,
             'post_id' => $request->post_id,
             'user_id'  => Auth::user()->id,
@@ -53,7 +42,7 @@ class CommentController extends Controller
      */
     public function update(UpdateCommentRequest $request, Comment $comment)
     {
-        $comment->update([
+        $this->commentRepo->update($comment->id, [
             'content' => $request->content,
             'post_id' => $request->post_id,
             'user_model' => Auth::user()->getTable(),
@@ -70,7 +59,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        $comment->delete();
+        $this->commentRepo->delete($comment->id);
 
         return back();
     }

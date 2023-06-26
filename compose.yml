@@ -1,6 +1,7 @@
 volumes:
   db-store:
   psysh-store:
+  redis-store:
 
 configs:
   db-config:
@@ -73,7 +74,10 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-secret}
 
   redis:
-    image: redis:5-alpine
-    container_name: app_redis
-    ports:
-      - "6382:6379"
+    image: redis:6.2-alpine
+    volumes:
+      - type: volume
+        source: redis-store
+        target: /data
+        volume:
+          nocopy: true

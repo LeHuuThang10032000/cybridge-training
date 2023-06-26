@@ -4,14 +4,21 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Repositories\Admin\AdminRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+    protected $adminRepo;
+
+    public function __construct(AdminRepository $adminRepo)
+    {
+        $this->adminRepo = $adminRepo;
+    }
+
     public function login(Request $request)
     {
         if ($request->getMethod() == 'GET') {
@@ -42,13 +49,13 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        $admin = Admin::create([
+        $admin = $this->adminRepo->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        Auth::login($admin);
+        Auth::guard('admin')->login($admin);
 
         return redirect()->route('admin.users.index');
     }

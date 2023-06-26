@@ -6,7 +6,7 @@
 @section('content')
 
 <div class="mx-auto" style="padding: 5px; width: 50%">
-    <form action="{{ route('admin.posts.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('mypage.posts.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Title</label>
@@ -46,7 +46,7 @@
                             return new Promise(function(resolve, reject) {
                                 // Init request
                                 var xhr = new XMLHttpRequest();
-                                xhr.open('POST', "{{ route('admin.posts.media.upload', ['_token' => csrf_token() ]) }}", true);
+                                xhr.open('POST', "{{ route('mypage.posts.media.upload', ['_token' => csrf_token() ]) }}", true);
                                 xhr.setRequestHeader('Accept', 'application/json');
                                 xhr.responseType = 'json';
                                 // Init listeners

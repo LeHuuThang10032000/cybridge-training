@@ -3,29 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Models\Post;
+use App\Repositories\Comment\CommentRepository;
+use App\Repositories\Post\PostRepository;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class MyPageController extends Controller
 {
+    protected $postRepo;
+    protected $commentRepo;
+
+    public function __construct(PostRepository $postRepo, CommentRepository $commentRepo)
+    {
+        $this->postRepo = $postRepo;
+        $this->commentRepo = $commentRepo;
+    }
+
     public function like()
     {
-        $posts = Post::whereLikedBy(Auth::user()->id)->with('media', 'likeCounter')->get();
+        $posts = $this->postRepo->getLikedPosts(Auth::user()->id);
 
         return view('mypage.liked', compact('posts'));
     }
 
     public function profile()
     {
-        $comments = Comment::where('user_model', 'users')->where('user_id', Auth::user()->id)->with('post')->get();
+        $comments = $this->commentRepo->getUserComment(Auth::user()->id);
 
-        $myPosts = DB::table('likeable_likes')
-            ->select('*',
-                DB::raw('(select name from users where `users`.`id` = `likeable_likes`.`user_id`) as user_name'),
-                DB::raw('(select title from posts where `posts`.`id` = `likeable_likes`.`likeable_id`) as post_title'))
-            ->where('user_id', '!=', Auth::user()->id)
-            ->get();
+        $myPosts = $this->postRepo->getPeopleLikedMyPosts(Auth::user()->id);
+        
         return view('mypage.profile', compact('comments', 'myPosts'));
     }
 }

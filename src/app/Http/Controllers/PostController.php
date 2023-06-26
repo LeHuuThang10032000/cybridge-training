@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdateCommentRequest;
-use App\Models\Comment;
 use App\Models\Post;
+use App\Repositories\Post\PostRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -15,16 +13,24 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class PostController extends Controller
 {
+    protected $postRepo;
+
+    public function __construct(PostRepository $postRepo)
+    {
+        $this->postRepo = $postRepo;
+    }
+
     public function detail($id)
     {
-        $post = Post::where('id', $id)->with('media', 'likeCounter', 'comments', 'comments.user', 'comments.replies')->first();
+        $post = $this->postRepo->findWith($id);
 
         return view('post', compact('post'));
     }
 
     public function like(Request $request)
     {
-        $post = Post::find($request->post_id);
+        $post = $this->postRepo->find($request->post_id);
+
         if ($post->liked(Auth::user()->id)) {
             $post->unlike();
             $post->save();
@@ -39,16 +45,15 @@ class PostController extends Controller
     public function create()
     {
         abort_if(Gate::denies('create_post'), 403);
-        
-        $posts = Post::where('creator_model', 'users')->where('created_by_id', Auth::user()->id)->with('media', 'likeCounter', 'comments', 'comments.user', 'comments.replies')->first();
-        return view('mypage.post', compact('posts'));
+
+        return view('mypage.post');
     }
 
     public function store(StorePostRequest $request)
     {
         abort_if(Gate::denies('create_post'), 403);
 
-        $post = Post::create([
+        $post = $this->postRepo->create([
             'title' => $request->title,
             'url' => '',
             'content' => $request->content,

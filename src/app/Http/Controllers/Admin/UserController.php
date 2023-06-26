@@ -6,25 +6,42 @@ use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Imports\UsersImport;
 use App\Models\User;
+use App\Repositories\Permission\PermissionRepository;
+use App\Repositories\User\UserRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
-use Spatie\Permission\Models\Permission;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $userRepo;
+    protected $permissionRepo;
+
+    public function __construct(UserRepository $userRepo, PermissionRepository $permissionRepo)
+    {
+        $this->userRepo = $userRepo;
+        $this->permissionRepo = $permissionRepo;
+    }
+
     public function index()
     {
-        $users = DB::table('users')->simplePaginate(20);
+        $page = request()->has('page') ? request()->get('page') : 1;
+
+        if (Cache::has('users_page_' . $page)) {
+            $users = Cache::get('users_page_' . $page);
+            return view('admin.users.index', compact('users'));
+        }
+        
+        $users = Cache::rememberForever('users_page_' . $page, function () {
+            return $this->userRepo->getUser(20);
+        });
+
         return view('admin.users.index', compact('users'));
     }
 
     public function edit(User $user)
     {
-        $rules = Permission::all();
+        $rules = $this->permissionRepo->getAll();
         return view('admin.users.edit', compact('rules', 'user'));
     }
 
@@ -33,7 +50,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->update([
+        $this->userRepo->update([
             'name' => $request->name,
             'email' => $request->email,
         ]);

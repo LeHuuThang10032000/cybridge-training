@@ -5,6 +5,7 @@
 @section('content')
 
 <div class="mx-auto" style="width: 50%;">
+    <h1>Login</h1>
     <form action="{{ route('login') }}" method="POST">
         @csrf
         <div class="mb-3">
@@ -14,12 +15,11 @@
         <div class="mb-3">
             <label for="exampleInputPassword1" class="form-label">Password</label>
             <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+            @if(session()->has('login_error'))
+            <div class="text-danger">Incorrect email or password</div>
+            @endif
         </div>
-        @if(session()->has('login_error'))
-        <p>
-            <strong>Incorrect email or password</strong>
-        </p>
-        @endif
+
         <button type="submit" class="btn btn-primary">login</button>
     </form>
     <a href="{{ route('register') }}">Or Register</a>

@@ -47,6 +47,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::group(['prefix' => 'mypage', 'as' => 'mypage.'], function () {
         Route::get('liked', [MyPageController::class, 'like'])->name('liked');
         Route::get('profile', [MyPageController::class, 'profile'])->name('profile');
+
+        Route::post('posts/upload-image', [PostController::class, 'storeCKImage'])->name('posts.media.upload');
         Route::resource('posts', PostController::class);
     });
 

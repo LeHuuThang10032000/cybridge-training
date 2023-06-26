@@ -7,23 +7,45 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Repositories\Post\PostRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class PostController extends Controller
 {
+    protected $postRepo;
+    protected $permissionRepo;
+
+    public function __construct(PostRepository $postRepo)
+    {
+        $this->postRepo = $postRepo;
+    }
+
     public function index()
     {
-        $posts = Post::simplePaginate(10);
-        return  view('admin.posts.index', compact('posts'));
+        $page = request()->has('page') ? request()->get('page') : 1;
+
+        if (Cache::has('posts_page_' . $page)) {
+            $posts = Cache::get('posts_page_' . $page);
+            return view('admin.posts.index', compact('posts'));
+        }
+        
+        $posts = Cache::rememberForever('posts_page_' . $page, function () {
+            return $this->postRepo->getPosts(20, ['media', 'likeCounter']);
+        });
+
+        return view('admin.posts.index', compact('posts'));
     }
 
     public function show(Post $post)
     {
-        $post->with('comments', 'comments.user', 'comments.replies');
+        $this->postRepo->findWith($post->id, ['comments', 'comments.user', 'comments.replies']);
+
         return view('admin.posts.show', compact('post'));
     }
 
@@ -34,7 +56,7 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        $post = Post::create([
+        $post = $this->postRepo->create([
             'title' => $request->title,
             'url' => '',
             'content' => $request->content,
@@ -61,13 +83,13 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        $post->with('comments', 'comments.user');
+        $this->postRepo->findWith($post->id, ['comments', 'comments.user']);
         return view('admin.posts.edit', compact('post'));
     }
 
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update([
+        $this->postRepo->update($post->id, [
             'title' => $request->title,
             'url' => url('/posts/' . $post->id),
             'content' => $request->content,
@@ -97,7 +119,7 @@ class PostController extends Controller
         if($post->thumbnail) {
             $post->thumbnail->delete();
         }
-        $post->delete();
+        $this->postRepo->delete($post->id);
 
         return redirect('admin/posts');
     }

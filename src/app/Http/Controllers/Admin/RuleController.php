@@ -5,14 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRuleRequest;
 use App\Http\Requests\UpdateRuleRequest;
+use App\Repositories\Permission\PermissionRepository;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class RuleController extends Controller
 {
+    protected $permissionRepo;
+
+    public function __construct(PermissionRepository $permissionRepo)
+    {
+        $this->permissionRepo = $permissionRepo;
+    }
+
     public function index()
     {
-        $rules = DB::table('permissions')->get();
+        $rules = $this->permissionRepo->getAll();
         return view('admin.rules.index', compact('rules'));
     }
 
@@ -29,7 +37,7 @@ class RuleController extends Controller
      */
     public function store(StoreRuleRequest $request)
     {
-        Permission::create([
+        $this->permissionRepo->create([
             'name' => $request->name,
         ]);
 
@@ -47,9 +55,9 @@ class RuleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRuleRequest $request, Permission $rule)
+    public function update(UpdateRuleRequest $request, Permission $permission)
     {
-        $rule->update([
+        $permission->update([
             'name' => $request->name,
         ]);
 

@@ -36,6 +36,11 @@ class Post extends Model implements HasMedia
         return $this->belongsTo(User::class, 'created_by_id', 'id');
     }
 
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'created_by_id', 'id');
+    }
+
     public function comments()
     {
         return $this->hasMany(Comment::class)->where('parent_id', null)->withTrashed();;

@@ -22,7 +22,7 @@ class PostController extends Controller
 
     public function detail($id)
     {
-        $post = $this->postRepo->findWith($id);
+        $post = $this->postRepo->findWith($id, ['comments', 'comments.user', 'comments.replies', 'comments.admin']);
 
         return view('post', compact('post'));
     }

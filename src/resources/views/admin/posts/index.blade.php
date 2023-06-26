@@ -42,7 +42,11 @@
                 <td>
                     <a href="{{$post->url}}">{{$post->url}}</a>
                 </td>
+                @if($post->creator_model == 'admins')
+                <td>{{$post->admin->name}}</td>
+                @else
                 <td>{{$post->author->name}}</td>
+                @endif
                 <td>{{$post->created_at}}</td>
                 <td>{{$post->created_at}}</td>
                 <td>

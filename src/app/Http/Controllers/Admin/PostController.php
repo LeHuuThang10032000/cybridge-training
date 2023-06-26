@@ -11,8 +11,6 @@ use App\Repositories\Post\PostRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
@@ -30,21 +28,14 @@ class PostController extends Controller
     {
         $page = request()->has('page') ? request()->get('page') : 1;
 
-        if (Cache::has('posts_page_' . $page)) {
-            $posts = Cache::get('posts_page_' . $page);
-            return view('admin.posts.index', compact('posts'));
-        }
-        
-        $posts = Cache::rememberForever('posts_page_' . $page, function () {
-            return $this->postRepo->getPosts(20, ['media', 'likeCounter']);
-        });
+        $posts = $this->postRepo->getPosts(10, ['media', 'likeCounter', 'admin', 'author']);
 
         return view('admin.posts.index', compact('posts'));
     }
 
-    public function show(Post $post)
+    public function show($id)
     {
-        $this->postRepo->findWith($post->id, ['comments', 'comments.user', 'comments.replies']);
+        $post = $this->postRepo->findWith($id, ['comments', 'comments.user', 'comments.replies']);
 
         return view('admin.posts.show', compact('post'));
     }
@@ -81,9 +72,9 @@ class PostController extends Controller
         return back();
     }
 
-    public function edit(Post $post)
+    public function edit($id)
     {
-        $this->postRepo->findWith($post->id, ['comments', 'comments.user']);
+        $post = $this->postRepo->findWith($id, ['comments', 'comments.user']);
         return view('admin.posts.edit', compact('post'));
     }
 

@@ -16,7 +16,7 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $posts = $this->postRepo->getPosts(null, ['media', 'likeCounter']);
+        $posts = $this->postRepo->getPosts(null, ['media', 'likeCounter', 'author', 'admin']);
         
         return view('dashboard', compact('posts'));
     }

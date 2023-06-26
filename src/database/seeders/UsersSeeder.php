@@ -2,20 +2,20 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\LazyCollection;
 
 class UsersSeeder extends Seeder
 {
     public function run()
     {
+        DB::connection()->disableQueryLog();
+        
         $csvFile = database_path('seeders/data/users.csv');
         $users = $this->parseCsv($csvFile);
 
-        $userChunks = array_chunk($users, 1000);
+        $userChunks = array_chunk($users, 100);
 
         foreach ($userChunks as $chunk) {
             $values = [];

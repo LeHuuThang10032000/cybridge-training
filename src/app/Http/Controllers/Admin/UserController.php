@@ -32,7 +32,7 @@ class UserController extends Controller
             return view('admin.users.index', compact('users'));
         }
         
-        $users = Cache::rememberForever('users_page_' . $page, function () {
+        $users = Cache::tags('users')->rememberForever('users_page_' . $page, function () {
             return $this->userRepo->getUser(20);
         });
 
@@ -48,9 +48,9 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $id)
     {
-        $this->userRepo->update([
+        $user = $this->userRepo->update($id, [
             'name' => $request->name,
             'email' => $request->email,
         ]);

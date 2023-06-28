@@ -12,8 +12,13 @@ ENV TZ=UTC \
 
 COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 
+COPY --chown=root:root ./infra/docker/php/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 RUN apt-get update \
   && apt-get -y install --no-install-recommends \
+  supervisor \
+  default-mysql-client \
+  cron \
   locales \
   git \
   unzip \
@@ -44,10 +49,14 @@ FROM base AS development
 
 COPY ./infra/docker/php/php.development.ini /usr/local/etc/php/php.ini
 
+ADD ./infra/docker/php/crontab /etc/cron.d/crontab
+RUN chmod 0644 /etc/cron.d/crontab
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
 FROM development AS development-xdebug
 
 RUN pecl install xdebug && \
-
   docker-php-ext-enable xdebug
 
 COPY ./infra/docker/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini

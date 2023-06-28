@@ -15,7 +15,7 @@ class UsersSeeder extends Seeder
         $csvFile = database_path('seeders/data/users.csv');
         $users = $this->parseCsv($csvFile);
 
-        $userChunks = array_chunk($users, 100);
+        $userChunks = array_chunk($users, 1000);
 
         foreach ($userChunks as $chunk) {
             $values = [];
@@ -36,7 +36,7 @@ class UsersSeeder extends Seeder
         $header = null;
 
         if (($handle = fopen($file, 'r')) !== false) {
-            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+            while (($row = fgetcsv($handle, 4096, ',')) !== false) {
                 if (!$header) {
                     $header = $row;
                 } else {

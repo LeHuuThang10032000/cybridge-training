@@ -74,7 +74,7 @@ class UserController extends Controller
 
     public function import(Request $request) 
     {
-        Excel::import(new UsersImport, $request->file('user_file')->store('files'));
+        Excel::queueImport(new UsersImport, $request->file('user_file')->store('files'));
         
         return back();
     }

@@ -1,0 +1,1 @@
+<textarea class="form-control ckeditor {{ $errors->has('content') ? 'is-invalid' : '' }}" name="content" id="content" >{!! $content !!}</textarea>

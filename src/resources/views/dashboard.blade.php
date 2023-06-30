@@ -25,7 +25,7 @@
                                 @csrf
                                 <input type="hidden" value="{{ $post->id }}" name="post_id">
                                 <button id="like_{{$post->id}}" type="submit" href="{{$post->url}}" class="btn {{ ($post->liked()) ? 'btn-danger' : 'btn-outline-danger' }} p-1" style="border-radius: 50%">
-                                    <img src="{{ asset('img/white-heart.png') }}" alt="#">
+                                    <img src="{{ asset('img/heart-line.png') }}" alt="">
                                 </button>
                             </form>
                         </div>

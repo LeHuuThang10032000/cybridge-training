@@ -34,6 +34,10 @@ services:
       - DB_DATABASE=${DB_DATABASE:-laravel}
       - DB_USERNAME=${DB_USERNAME:-phper}
       - DB_PASSWORD=${DB_PASSWORD:-secret}
+    depends_on:
+      - db
+      - redis
+      - laravel_echo_server
 
   web:
     build:
@@ -81,3 +85,11 @@ services:
         target: /data
         volume:
           nocopy: true
+  
+  laravel_echo_server:
+    build:
+      context: .
+      dockerfile: ./infra/docker/laravel-echo-server/Dockerfile
+    volumes:
+      - .env:/app/.env
+    restart: unless-stopped

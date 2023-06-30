@@ -42,7 +42,7 @@
     <form class="mb-0" action="{{ route('comments.store') }}" method="POST">
         @csrf
         <input type="hidden" value="{{ $post->id }}" name="post_id">
-        <textarea class="form-control ckeditor {{ $errors->has('content') ? 'is-invalid' : '' }}" name="content" id="content"></textarea>
+        <x-forms.ckeditor content="{{old('content', '')}}" />
         @if($errors->has('content'))
         <div class="text-danger">{{ $errors->first('content') }}</div>
         @endif

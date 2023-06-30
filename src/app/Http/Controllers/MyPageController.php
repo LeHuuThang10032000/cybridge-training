@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
 use App\Repositories\Comment\CommentRepository;
 use App\Repositories\Post\PostRepository;
+use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class MyPageController extends Controller
 {
@@ -18,19 +20,26 @@ class MyPageController extends Controller
         $this->commentRepo = $commentRepo;
     }
 
-    public function like()
+    public function like(): View
     {
-        $posts = $this->postRepo->getLikedPosts(Auth::user()->id);
+        try {
+            $posts = $this->postRepo->getLikedPosts(Auth::user()->id);
 
-        return view('mypage.liked', compact('posts'));
+            return view('mypage.liked', compact('posts'));
+        } catch(Exception $e) {
+            Log::channel('mypagelog')->info('Failed to load liked posts: {e}', ['e' => $e]);
+            return abort(404);
+        }
     }
 
     public function profile()
     {
-        $comments = $this->commentRepo->getUserComment(Auth::user()->id);
+            $comments = $this->commentRepo->getUserComment(Auth::user()->id);
 
-        $myPosts = $this->postRepo->getPeopleLikedMyPosts(Auth::user()->id);
-        
-        return view('mypage.profile', compact('comments', 'myPosts'));
+            $posts = $this->postRepo->getUserPosts();
+
+            $likes = $this->postRepo->getPeopleLikedMyPosts(Auth::user()->id, $posts);
+            
+            return view('mypage.profile', compact('comments', 'likes', 'posts'));
     }
 }

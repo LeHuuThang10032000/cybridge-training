@@ -18,7 +18,7 @@
         </div>
         <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label">Content</label>
-            <textarea class="form-control ckeditor {{ $errors->has('content') ? 'is-invalid' : '' }}" name="content" id="content">{!! old('content', $post->content) !!}</textarea>
+            <x-forms.ckeditor content="{{old('content', $post->content)}}" />
             @if($errors->has('content'))
             <div class="text-danger">{{ $errors->first('content') }}</div>
             @endif

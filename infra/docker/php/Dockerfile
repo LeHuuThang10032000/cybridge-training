@@ -1,7 +1,7 @@
 FROM php:8.2-fpm-bullseye AS base
 WORKDIR /workspace
 # timezone environment
-ENV TZ=UTC \
+ENV TZ=Asia/Ho_Chi_Minh \
   # locale
   LANG=en_US.UTF-8 \
   LANGUAGE=en_US:en \
@@ -33,6 +33,7 @@ RUN apt-get update \
   && locale-gen en_US.UTF-8 \
   && localedef -f UTF-8 -i en_US en_US.UTF-8 \
   && docker-php-ext-install \
+  sockets \
   intl \
   pdo_mysql \
   zip \

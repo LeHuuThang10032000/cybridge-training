@@ -49,9 +49,7 @@
         var countId = '#likes_count_' + formData.get('post_id');
         
         $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
         $.post({
             url: "{{ route('posts.like') }}",

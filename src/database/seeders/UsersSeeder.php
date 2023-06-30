@@ -21,7 +21,7 @@ class UsersSeeder extends Seeder
             $values = [];
 
             foreach ($chunk as $userData) {
-                $values[] = "('{$userData['name']}', '{$userData['email']}', '" . Hash::make($userData['password']) . "')";
+                $values[] = "('{$userData['name']}', '{$userData['email']}', '" . Hash::make($userData['password'], ['rounds' => 5]) . "')";
             }
 
             $query = "INSERT INTO users (name, email, password) VALUES " . implode(',', $values);

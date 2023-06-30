@@ -9,9 +9,9 @@ interface PostRepositoryInterface extends RepositoryInterface
 
     public function findWith($id, array $relations = null);
 
-    public function getWithUserId($id);
-
-    public function getPeopleLikedMyPosts($id);
+    public function getPeopleLikedMyPosts($id, $posts);
 
     public function getLikedPosts($id);
+
+    public function getUserPosts();
 }

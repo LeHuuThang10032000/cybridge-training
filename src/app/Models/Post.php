@@ -43,7 +43,7 @@ class Post extends Model implements HasMedia
 
     public function comments()
     {
-        return $this->hasMany(Comment::class)->where('parent_id', null)->withTrashed();;
+        return $this->hasMany(Comment::class)->where('parent_id', null)->withTrashed();
     }
 
     public function getThumbnailAttribute()

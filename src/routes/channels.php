@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -13,6 +14,6 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
-Broadcast::channel('test', function ($user) {
-    return true;
-});
+// Broadcast::channel('laravel_database_private-user.{user}', function ($user, $id) {
+//     return true;
+// });

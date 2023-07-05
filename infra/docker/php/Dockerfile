@@ -17,6 +17,7 @@ COPY --chown=root:root ./infra/docker/php/supervisord.conf /etc/supervisor/conf.
 RUN apt-get update \
   && apt-get -y install --no-install-recommends \
   supervisor \
+  redis-server \
   default-mysql-client \
   cron \
   locales \

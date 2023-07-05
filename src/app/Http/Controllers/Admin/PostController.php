@@ -94,8 +94,6 @@ class PostController extends Controller
             'url' => url('/posts/' . $post->id),
             'content' => $request->content,
             'thumbnail' => '',
-            'creator_model' => Auth::user()->getTable(),
-            'created_by_id' => Auth::user()->id,
         ]);
 
         if ($request->hasFile('thumbnail', false)) {

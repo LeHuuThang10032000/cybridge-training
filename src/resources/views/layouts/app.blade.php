@@ -13,16 +13,27 @@
 
     <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet" />
     <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-    <script src="{{ asset('build/assets/laravel-echo-setup-1907d8e5.js') }}"></script>
-    
     <style>
         .image img {
             width: 100%;
             object-fit: cover;
+        }
+
+        .toast-info {
+            background-color: #F9595F !important;
+        }
+
+        #toast-container>.toast-info {
+            background-image: url("http://localhost/img/heart.png") !important;
+        }
+
+        #toast-container>div {
+            width: fit-content;
         }
     </style>
 </head>
@@ -37,6 +48,12 @@
             $('.ckeditor').ckeditor();
         });
     </script>
+    <script src="toastr.js"></script>
+    <script src="http://localhost:6001/socket.io/socket.io.js"></script>
+    <script>
+        var userId = {{ Auth::user()-> id ?? '' }};
+    </script>
+    @vite('resources/js/app.js')
     @stack('scripts')
 </body>
 

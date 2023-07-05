@@ -37,7 +37,6 @@ services:
     depends_on:
       - db
       - redis
-      - laravel_echo_server
 
   web:
     build:
@@ -91,5 +90,7 @@ services:
       context: .
       dockerfile: ./infra/docker/laravel-echo-server/Dockerfile
     volumes:
-      - .env:/app/.env
+      - ./src/.env:/app/.env
     restart: unless-stopped
+    ports:
+      - 6001:6001

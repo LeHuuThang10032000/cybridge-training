@@ -17,7 +17,13 @@
                     <p class="fs-6 text-danger">Like(s): <span id="likes_count_{{$post->id}}">{{ $post->likeCount }}</span></p>
                     <h5 class="card-title">{{$post->title}}</h5>
                     <p>Last published: {{$post->updated_at}}</p>
-                    <p>Author: {{$post->author->name}}</p>
+
+                    @if($post->creator_model == 'admins')
+                        <p>Author: {{$post->admin->name}}</p>
+                    @else
+                        <p>Author: {{$post->author->name}}</p>
+                    @endif
+                    
                     <div class="d-flex justify-content-between">
                         <a href="{{$post->url}}" class="btn btn-primary">Read detail</a>
                         <div class="align-self-center">
@@ -47,7 +53,7 @@
         var formData = new FormData(this);
         var buttonId = '#like_' + formData.get('post_id');
         var countId = '#likes_count_' + formData.get('post_id');
-        
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -60,12 +66,12 @@
             contentType: false,
             processData: false,
             success: function(data) {
-                if(data.is_like == true) {
-                    alert('liked');
+                if (data.is_like == true) {
+                    // alert('liked');
                     $(buttonId).removeClass('btn-outline-danger').addClass('btn-danger');
                     $(countId).text(data.counts);
                 } else {
-                    alert('unliked');
+                    // alert('unliked');
                     $(buttonId).removeClass('btn-danger').addClass('btn-outline-danger');
                     $(countId).text(data.counts);
                 }

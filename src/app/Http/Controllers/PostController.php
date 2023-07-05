@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LikeEvent;
 use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use App\Repositories\Post\PostRepository;
@@ -33,16 +34,20 @@ class PostController extends Controller
     public function like(Request $request)
     {
         $post = $this->postRepo->find($request->post_id);
+        $likes = $post->likeCount;
 
-        if ($post->liked(Auth::user()->id)) {
+        $user = Auth::user();
+
+        if ($post->liked($user->id)) {
             $post->unlike();
             $post->save();
         } else {
+            if($post->creator_model == 'users') broadcast(new LikeEvent($post, $user))->toOthers();
             $post->like();
             $post->save();
         }
 
-        return response()->json(['is_like' => $post->liked(), 'counts' => $post->likeCount]);
+        return response()->json(['is_like' => $post->liked(), 'counts' => $likes]);
     }
 
     public function create()
@@ -84,7 +89,7 @@ class PostController extends Controller
             return back();
         } catch (Exception $e) {
             DB::rollBack();
-            Log::channel('mypagelog')->info('Failed to load profile: {e}', ['e' => $e]);
+            Log::channel('mypagelog')->info('Failed to upload post: {e}', ['e' => $e]);
             return back();
         }
     }

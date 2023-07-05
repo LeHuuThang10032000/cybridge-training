@@ -29,7 +29,7 @@
             @csrf
             <input type="hidden" value="{{ $post->id }}" name="post_id">
             <button id="like_{{$post->id}}" type="submit" href="{{$post->url}}" class="btn {{ ($post->liked()) ? 'btn-danger' : 'btn-outline-danger' }} p-1" style="border-radius: 50%">
-                <img src="{{ asset('img/white-heart.png') }}" alt="#">
+                <img src="{{ asset('img/heart-line.png') }}" alt="#">
             </button>
             <span id="likes_count_{{$post->id}}">{{ $post->likeCount }} like(s)</span>
         </form>
@@ -144,11 +144,9 @@
             processData: false,
             success: function(data) {
                 if (data.is_like == true) {
-                    alert('liked');
                     $(buttonId).removeClass('btn-outline-danger').addClass('btn-danger');
                     $(countId).text(data.counts + ' like(s)');
                 } else {
-                    alert('unliked');
                     $(buttonId).removeClass('btn-danger').addClass('btn-outline-danger');
                     $(countId).text(data.counts + ' like(s)');
                 }

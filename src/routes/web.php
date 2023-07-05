@@ -28,12 +28,6 @@ Route::match(['get', 'post'], '/login', [AuthController::class, 'login'])->name(
 Route::get('register', [AuthController::class, 'create'])->name('register');
 Route::post('register', [AuthController::class, 'store']);
 
-
-Route::post('test', function() {
-    broadcast(new App\Events\LikePostEvent())->toOthers();
-    return 'test';
-})->name('test');
-
 Route::group(['middleware' => ['auth']], function () {
     Route::get('', [DashboardController::class, 'index'])->name('dashboard');
     
